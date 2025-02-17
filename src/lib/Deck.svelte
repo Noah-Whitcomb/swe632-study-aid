@@ -32,6 +32,10 @@
     }
     showMenu = false;
   }
+
+  function handleImportDeck(event) {
+    dispatch('importDeck', event);
+  }
 </script>
 
 <style>
@@ -50,6 +54,7 @@
     left: 50%;
     transform: translateX(-50%);
     box-sizing: border-box;
+    z-index: 1;
   }
 
   .deck-title {
@@ -180,6 +185,9 @@
                tabindex="0">
             <button class="menu-item" onclick={editDeck} role="menuitem" tabindex="0" onkeydown={(e) => e.key === 'Enter' && editDeck()}>
               ✏️ Edit
+            </button>
+            <button class="menu-item" onclick={handleImportDeck} role="menuitem" tabindex="0" onkeydown={(e) => e.key === 'Enter' && handleImportDeck(e)}>
+              📤 Import
             </button>
             <button class="menu-item" onclick={deleteDeck} role="menuitem" tabindex="0" onkeydown={(e) => e.key === 'Enter' && deleteDeck()}>
               🗑️ Delete
