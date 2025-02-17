@@ -1,50 +1,28 @@
 <script>
   import Flashcard from './Flashcard.svelte';
   import Deck from './Deck.svelte';
-  let newQuestion = "";
-  let newAnswer = "";
-  let selectedDeck = null;
-  let newDeckName = "";
-  let decks = [];
-  let showDeckInput = false;
+  let newQuestion = $state("");
+  let newAnswer = $state("");
+  let newDeckName = $state("");
+  let showDeckInput = $state(false);
+  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard } = $props();
 
   function handleEditDeck(event) {
     const { newName } = event.detail;
-    decks = decks.map(deck => 
-      deck === selectedDeck 
-        ? { ...deck, name: newName }
-        : deck
-    );
-    selectedDeck = { ...selectedDeck, name: newName };
+    // decks = decks.map(deck => 
+    //   deck === selectedDeck 
+    //     ? { ...deck, name: newName }
+    //     : deck
+    // );
+    decks[selectedDeck].name = newName;
+    //selectedDeck = { ...selectedDeck, name: newName };
   }
 
   function handleDeleteDeck() {
-    decks = decks.filter(deck => deck !== selectedDeck);
+    decks.splice(selectedDeck, 1)
     selectedDeck = null;
   }
 
-  function addFlashcard() {
-    if (newQuestion.trim() !== "" && newAnswer.trim() !== "" && selectedDeck !== null) {
-      const newCard = { question: newQuestion, answer: newAnswer };
-      selectedDeck.flashcards = [...selectedDeck.flashcards, newCard];
-      newQuestion = "";
-      newAnswer = "";
-    }
-  }
-
-  function addDeck() {
-    if (newDeckName.trim() !== "") {
-      const newDeck = { name: newDeckName, flashcards: [] };
-      decks = [...decks, newDeck];
-      selectedDeck = newDeck;  // Auto-select new deck
-      newDeckName = "";
-      showDeckInput = false;
-    }
-  }
-
-  function selectDeck(deck) {
-    selectedDeck = deck;
-  }
 </script>
 
 <style>
@@ -75,7 +53,7 @@
     box-sizing: border-box;
   }
 
-  .add-button {
+  /* .add-button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     border: none;
@@ -84,7 +62,8 @@
     color: #fff;
     cursor: pointer;
     align-self: flex-end;
-  }
+  } */
+
 
   .add-button:hover {
     background-color: #0056b3;
@@ -110,27 +89,7 @@
 </style>
 
 <div class="flashcard-list">
-  <div class="input-container">
-    {#if showDeckInput}
-      <input
-        type="text"
-        class="text-input"
-        bind:value={newDeckName}
-        placeholder="Enter deck name"
-      />
-      <button class="add-button" on:click={addDeck}>Save Deck</button>
-    {:else}
-      <button class="add-button" on:click={() => showDeckInput = true}>Add Deck</button>
-    {/if}
-  </div>
-  <div class="deck-list">
-    {#each decks as deck}
-      <button type="button" class="deck-item" on:click={() => selectDeck(deck)} on:keydown={(e) => e.key === 'Enter' && selectDeck(deck)} role="button">
-        {deck.name}
-      </button>
-    {/each}
-  </div>
-  {#if selectedDeck}
+  {#if typeof selectedDeck === "number" && selectedDeck >= 0}
     <div class="input-container">
       <input
         type="text"
@@ -144,11 +103,11 @@
         bind:value={newAnswer}
         placeholder="Enter answer"
       />
-      <button class="add-button" on:click={addFlashcard}>Add</button>
+      <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { addFlashcard(newQuestion, newAnswer); newQuestion = ""; newAnswer = ""; } }>Add</button>
     </div>
     <Deck 
-      flashcards={selectedDeck.flashcards} 
-      deckName={selectedDeck.name}
+      flashcards={decks[selectedDeck].flashcards} 
+      deckName={decks[selectedDeck].name}
       on:edit={handleEditDeck}
       on:delete={handleDeleteDeck}
     />
