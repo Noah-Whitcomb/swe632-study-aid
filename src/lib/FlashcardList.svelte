@@ -1,12 +1,12 @@
 <script>
   import Flashcard from './Flashcard.svelte';
   import Deck from './Deck.svelte';
-  let newQuestion = "";
-  let newAnswer = "";
-  let selectedDeck = null;
-  let newDeckName = "";
-  let decks = [];
-  let showDeckInput = false;
+  let newQuestion = $state("");
+  let newAnswer = $state("");
+  let selectedDeck = $state(null);
+  let newDeckName = $state("");
+  let showDeckInput = $state(false);
+  let { decks=$bindable(), handleDeckChange } = $props();
 
   function handleEditDeck(event) {
     const { newName } = event.detail;
@@ -39,12 +39,14 @@
       selectedDeck = newDeck;  // Auto-select new deck
       newDeckName = "";
       showDeckInput = false;
+      handleDeckChange(newDeck);  // Notify parent component of the new deck
+      console.log("decks in flashcardlist = " + decks);
     }
   }
 
-  function selectDeck(deck) {
-    selectedDeck = deck;
-  }
+  // function selectDeck(deck) {
+  //   selectedDeck = deck;
+  // }
 </script>
 
 <style>
@@ -75,7 +77,7 @@
     box-sizing: border-box;
   }
 
-  .add-button {
+  /* .add-button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
     border: none;
@@ -84,7 +86,8 @@
     color: #fff;
     cursor: pointer;
     align-self: flex-end;
-  }
+  } */
+
 
   .add-button:hover {
     background-color: #0056b3;
@@ -118,18 +121,18 @@
         bind:value={newDeckName}
         placeholder="Enter deck name"
       />
-      <button class="add-button" on:click={addDeck}>Save Deck</button>
+      <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={addDeck}>Save Deck</button>
     {:else}
-      <button class="add-button" on:click={() => showDeckInput = true}>Add Deck</button>
+      <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => showDeckInput = true}>Add Deck</button>
     {/if}
   </div>
-  <div class="deck-list">
+  <!-- <div class="deck-list">
     {#each decks as deck}
-      <button type="button" class="deck-item" on:click={() => selectDeck(deck)} on:keydown={(e) => e.key === 'Enter' && selectDeck(deck)} role="button">
+      <button type="button" class="deck-item" onclick={() => selectDeck(deck)} onkeydown={(e) => e.key === 'Enter' && selectDeck(deck)} role="button">
         {deck.name}
       </button>
     {/each}
-  </div>
+  </div> -->
   {#if selectedDeck}
     <div class="input-container">
       <input
@@ -144,7 +147,7 @@
         bind:value={newAnswer}
         placeholder="Enter answer"
       />
-      <button class="add-button" on:click={addFlashcard}>Add</button>
+      <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={addFlashcard}>Add</button>
     </div>
     <Deck 
       flashcards={selectedDeck.flashcards} 
