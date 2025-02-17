@@ -1,12 +1,15 @@
 <script>
   import Flashcard from './Flashcard.svelte';
   import Deck from './Deck.svelte';
+  import ImportModal from './ImportModal.svelte';
+
   let newQuestion = "";
   let newAnswer = "";
   let selectedDeck = null;
   let newDeckName = "";
   let decks = [];
   let showDeckInput = false;
+  let showImportModal = false;
 
   function handleEditDeck(event) {
     const { newName } = event.detail;
@@ -40,6 +43,38 @@
       newDeckName = "";
       showDeckInput = false;
     }
+  }
+
+  function openImportModal() {
+    showImportModal = true;
+  }
+
+  function closeImportModal() {
+    showImportModal = false;
+  }
+
+  function importDeck(event) {
+    const file = event.detail.file;
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        if (!selectedDeck) {
+            return;
+        }
+
+        const text = e.target.result;
+
+        const importedFlashcards = text.split("\n").map(line => {
+            const [q, a] = line.split("|").map(part => part.trim());
+            return q && a ? { question: q, answer: a } : null;
+        }).filter(Boolean);
+
+        selectedDeck.flashcards = [...selectedDeck.flashcards, ...importedFlashcards];
+    };
+    reader.readAsText(file);
   }
 
   function selectDeck(deck) {
@@ -109,6 +144,8 @@
   }
 </style>
 
+<ImportModal show={showImportModal} on:import={importDeck} on:close={closeImportModal} />
+
 <div class="flashcard-list">
   <div class="input-container">
     {#if showDeckInput}
@@ -151,6 +188,7 @@
       deckName={selectedDeck.name}
       on:edit={handleEditDeck}
       on:delete={handleDeleteDeck}
+      on:importDeck={openImportModal}
     />
   {/if}
 </div>
