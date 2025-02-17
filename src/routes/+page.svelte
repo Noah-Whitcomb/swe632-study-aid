@@ -45,7 +45,7 @@
   <div class="flex">
     <div class="flex flex-col justify-start">
       <div class="flex" >
-        <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-start mb-2" onclick={handleShowMenu}> toggle </button>
+        <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-start mb-2" onclick={handleShowMenu}> Show active decks? </button>
         <div class="flex justify-center w-[800px] mb-4 box-border">
           {#if showDeckInput}
             <input
