@@ -2,11 +2,10 @@
   import Flashcard from './Flashcard.svelte';
   import { createEventDispatcher } from 'svelte';
   
-  export let flashcards = [];
-  export let deckName = "";
-  let showMenu = false;
-  let isEditing = false;
-  let editedName = deckName;
+  let { flashcards, deckName } = $props();
+  let showMenu = $state(false);
+  let isEditing = $state(false);
+  let editedName = $state(deckName);
   
   const dispatch = createEventDispatcher();
 
@@ -166,23 +165,23 @@
           bind:value={editedName}
           class="edit-input"
           placeholder="Enter deck name"
-          on:keydown={(e) => e.key === 'Enter' && saveDeckName()}
+          onkeydown={(e) => e.key === 'Enter' && saveDeckName()}
         />
-        <button class="save-button" on:click={saveDeckName}>Save</button>
+        <button class="save-button" onclick={saveDeckName}>Save</button>
       </div>
     {:else}
       <h2 class="deck-title">{deckName || 'Untitled'}</h2>
       <div class="menu-container">
-        <button class="menu-dots" on:click={toggleMenu}>⋮</button>
+        <button class="menu-dots" onclick={toggleMenu}>⋮</button>
         {#if showMenu}
           <div class="menu" 
-               on:mouseleave={() => showMenu = false}
+               onmouseleave={() => showMenu = false}
                role="menu"
                tabindex="0">
-            <button class="menu-item" on:click={editDeck} role="menuitem" tabindex="0" on:keydown={(e) => e.key === 'Enter' && editDeck()}>
+            <button class="menu-item" onclick={editDeck} role="menuitem" tabindex="0" onkeydown={(e) => e.key === 'Enter' && editDeck()}>
               ✏️ Edit
             </button>
-            <button class="menu-item" on:click={deleteDeck} role="menuitem" tabindex="0" on:keydown={(e) => e.key === 'Enter' && deleteDeck()}>
+            <button class="menu-item" onclick={deleteDeck} role="menuitem" tabindex="0" onkeydown={(e) => e.key === 'Enter' && deleteDeck()}>
               🗑️ Delete
             </button>
           </div>
