@@ -65,6 +65,7 @@
 <style>
   .flashcard-list {
     max-width: 1800px;  /* Increased to match deck width */
+    min-height: 1000px;
     margin: 0 auto;
     padding: 1rem;
     display: flex;
