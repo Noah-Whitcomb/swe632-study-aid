@@ -38,21 +38,16 @@
     if (!file) {
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
-        if (!selectedDeck) {
-            return;
-        }
-
         const text = e.target.result;
-
         const importedFlashcards = text.split("\n").map(line => {
             const [q, a] = line.split("|").map(part => part.trim());
             return q && a ? { question: q, answer: a } : null;
         }).filter(Boolean);
 
-        selectedDeck.flashcards = [...selectedDeck.flashcards, ...importedFlashcards];
+        decks[selectedDeck].flashcards = [...decks[selectedDeck].flashcards, ...importedFlashcards];
+
     };
     reader.readAsText(file);
   }
