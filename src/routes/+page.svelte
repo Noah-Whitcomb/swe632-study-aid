@@ -1,12 +1,25 @@
 <script>
   import FlashcardList from '$lib/FlashcardList.svelte';
 	import Menu from '$lib/Menu.svelte';
+  import Toast from '$lib/Toast.svelte';
 
   let decks = $state([]);
   let selectedDeck = $state(null);
   let newDeckName = $state("");
   let showDeckInput = $state(false);
   let showMenu = $state(false);
+
+  let showToast = $state(false);
+  let toastMessage = $state("");
+
+  function showSuccessMessage(message) {
+    toastMessage = message;
+    showToast = true;
+    
+    setTimeout(() => {
+      showToast = false;
+    }, 3000);
+  }
 
   function handleDeckChange(deck) {
     console.log("handling deck change in page.svelet");
@@ -18,9 +31,9 @@
     if (newDeckName.trim() !== "") {
       const newDeck = { name: newDeckName, flashcards: [] };
       decks = [...decks, newDeck];
-      //selectedDeck = newDeck;  // Auto-select new deck
       handleDeckChange(decks.length - 1);  // Notify parent component of the new deck
       console.log("decks in flashcardlist = " + decks);
+      showSuccessMessage(`Deck "${newDeckName}" created successfully!`);
     }
   }
 
@@ -29,6 +42,7 @@
       const newCard = { question: newQuestion, answer: newAnswer };
       decks[selectedDeck].flashcards = [...decks[selectedDeck].flashcards, newCard];
       console.log("inside addFlashcard:" + JSON.stringify(selectedDeck, null, 2));
+      showSuccessMessage("Flashcard added successfully!");
     }
   }
 
@@ -68,6 +82,8 @@
     <div class="justify-center">
       <FlashcardList decks={decks} handleDeckChange={handleDeckChange} selectedDeck={selectedDeck} addDeck={addDeck} addFlashcard={addFlashcard}/>
     </div>
+
+    <Toast message={toastMessage} show={showToast} />
     
   </div>
 </main>
