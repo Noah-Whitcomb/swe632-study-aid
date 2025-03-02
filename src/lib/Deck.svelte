@@ -36,6 +36,11 @@
   function handleImportDeck(event) {
     dispatch('importDeck', event);
   }
+
+  function deleteFlashcard(event) {
+    const { index } = event.detail;
+    dispatch('deleteFlashcard', { index });
+  }
 </script>
 
 <style>
@@ -198,8 +203,13 @@
     {/if}
   </div>
   <div class="flashcards-container">
-    {#each flashcards as flashcard}
-      <Flashcard question={flashcard.question} answer={flashcard.answer} />
+    {#each flashcards as flashcard, i}
+      <Flashcard 
+        question={flashcard.question} 
+        answer={flashcard.answer} 
+        index={i} 
+        on:delete={deleteFlashcard}
+      />
     {/each}
   </div>
 </div>
