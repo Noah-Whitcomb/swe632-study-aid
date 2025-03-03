@@ -57,6 +57,14 @@
       previousCard();
     }
   }
+
+  function handleEditCard(editedCard) {
+    flashcards[currentCardIndex] = editedCard;
+    dispatch('editCard', { 
+      cardIndex: currentCardIndex, 
+      card: editedCard 
+    });
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown}/>
@@ -253,6 +261,7 @@
     <Flashcard 
       question={flashcards[currentCardIndex].question} 
       answer={flashcards[currentCardIndex].answer}
+      on:editCard={({ detail }) => handleEditCard(detail)}
     />
     
     <div class="navigation-buttons">
