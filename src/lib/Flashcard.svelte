@@ -120,14 +120,3 @@
     pointer-events: none; /* Prevent indicator from interfering with scroll */
   }
 </style>
-
-<button type="button" class="flashcard {flipped ? 'flipped' : ''}" on:click={flipCard} aria-label="Flashcard">
-  <div class="flashcard-content flashcard-front">
-    <p>{question}</p>
-    <div class="flip-indicator">Flip</div>
-  </div>
-  <div class="flashcard-content flashcard-back">
-    <p>{answer}</p>
-    <div class="flip-indicator">Flip</div>
-  </div>
-</button>
