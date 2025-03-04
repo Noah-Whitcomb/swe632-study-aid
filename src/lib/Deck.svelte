@@ -2,7 +2,7 @@
   import Flashcard from './Flashcard.svelte';
   import { createEventDispatcher } from 'svelte';
   
-  let { flashcards, deckName } = $props();
+  let { flashcards, deckName, showSuccessMessage } = $props();
   let showMenu = $state(false);
   let isEditing = $state(false);
   let editedName = $state(deckName);
@@ -267,6 +267,7 @@
       question={flashcards[currentCardIndex].question} 
       answer={flashcards[currentCardIndex].answer}
       index={currentCardIndex} 
+      showSuccessMessage={showSuccessMessage}
       on:editCard={({ detail }) => handleEditCard(detail)}
       on:delete={deleteFlashcard}
     />
