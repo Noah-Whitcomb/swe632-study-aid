@@ -59,7 +59,7 @@
 
   function handleDeleteFlashcard(event) {
     const { index } = event.detail;
-    if (confirm('Are you sure you want to delete this deck and all its cards?')) {
+    if (confirm('Are you sure you want to delete this flashcard?')) {
       if (selectedDeck !== null) {
         decks[selectedDeck].flashcards.splice(index, 1);
         decks = [...decks];

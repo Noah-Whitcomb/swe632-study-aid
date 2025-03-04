@@ -49,7 +49,7 @@
 
   function deleteCard(event) {
     event.stopPropagation();
-    dispatch('delete', { index });
+    dispatch('deleteFlashcard', { index });
   }
 </script>
 
