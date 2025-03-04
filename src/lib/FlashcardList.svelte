@@ -53,9 +53,11 @@
 
   function handleDeleteFlashcard(event) {
     const { index } = event.detail;
-    if (selectedDeck !== null) {
-      decks[selectedDeck].flashcards.splice(index, 1);
-      decks = [...decks];
+    if (confirm('Are you sure you want to delete this deck and all its cards?')) {
+      if (selectedDeck !== null) {
+        decks[selectedDeck].flashcards.splice(index, 1);
+        decks = [...decks];
+      }
     }
     showSuccessMessage("Flashcard deleted successfully!");
   }
