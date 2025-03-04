@@ -6,7 +6,7 @@
   let newAnswer = $state("");
   let newDeckName = $state("");
   let showDeckInput = $state(false);
-  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard } = $props();
+  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard, showSuccessMessage } = $props();
   let showImportModal = $state(false);
 
   function handleEditDeck(event) {
@@ -23,6 +23,7 @@
   function handleDeleteDeck() {
     decks.splice(selectedDeck, 1)
     selectedDeck = null;
+    showSuccessMessage("Deck deleted successfully!");
   }
 
   function openImportModal() {
@@ -38,21 +39,16 @@
     if (!file) {
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e) => {
-        if (!selectedDeck) {
-            return;
-        }
-
         const text = e.target.result;
-
         const importedFlashcards = text.split("\n").map(line => {
             const [q, a] = line.split("|").map(part => part.trim());
             return q && a ? { question: q, answer: a } : null;
         }).filter(Boolean);
 
-        selectedDeck.flashcards = [...selectedDeck.flashcards, ...importedFlashcards];
+        decks[selectedDeck].flashcards = [...decks[selectedDeck].flashcards, ...importedFlashcards];
+
     };
     reader.readAsText(file);
   }
@@ -60,11 +56,23 @@
   function selectDeck(deck) {
     selectedDeck = deck;
   }
+
+  function handleDeleteFlashcard(event) {
+    const { index } = event.detail;
+    if (confirm('Are you sure you want to delete this deck and all its cards?')) {
+      if (selectedDeck !== null) {
+        decks[selectedDeck].flashcards.splice(index, 1);
+        decks = [...decks];
+      }
+    }
+    showSuccessMessage("Flashcard deleted successfully!");
+  }
 </script>
 
 <style>
   .flashcard-list {
     max-width: 1800px;  /* Increased to match deck width */
+    min-height: 1000px;
     margin: 0 auto;
     padding: 1rem;
     display: flex;
@@ -147,9 +155,11 @@
     <Deck 
       flashcards={decks[selectedDeck].flashcards} 
       deckName={decks[selectedDeck].name}
+      showSuccessMessage={showSuccessMessage}
       on:edit={handleEditDeck}
       on:delete={handleDeleteDeck}
       on:importDeck={openImportModal}
+      on:deleteFlashcard={handleDeleteFlashcard}
     />
   {/if}
 </div>
