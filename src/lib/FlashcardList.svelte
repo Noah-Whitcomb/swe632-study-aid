@@ -6,7 +6,7 @@
   let newAnswer = $state("");
   let newDeckName = $state("");
   let showDeckInput = $state(false);
-  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard } = $props();
+  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard, showSuccessMessage } = $props();
   let showImportModal = $state(false);
 
   function handleEditDeck(event) {
@@ -23,6 +23,7 @@
   function handleDeleteDeck() {
     decks.splice(selectedDeck, 1)
     selectedDeck = null;
+    showSuccessMessage("Deck deleted successfully!");
   }
 
   function openImportModal() {
@@ -63,10 +64,13 @@
 
   function handleDeleteFlashcard(event) {
     const { index } = event.detail;
-    if (selectedDeck !== null) {
-      decks[selectedDeck].flashcards.splice(index, 1);
-      decks = [...decks];
+    if (confirm('Are you sure you want to delete this deck and all its cards?')) {
+      if (selectedDeck !== null) {
+        decks[selectedDeck].flashcards.splice(index, 1);
+        decks = [...decks];
+      }
     }
+    showSuccessMessage("Flashcard deleted successfully!");
   }
 </script>
 
@@ -156,6 +160,7 @@
     <Deck 
       flashcards={decks[selectedDeck].flashcards} 
       deckName={decks[selectedDeck].name}
+      showSuccessMessage={showSuccessMessage}
       on:edit={handleEditDeck}
       on:delete={handleDeleteDeck}
       on:importDeck={openImportModal}

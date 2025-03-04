@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  let { question, answer, index } = $props();
+  let { question, answer, index, showSuccessMessage } = $props();
   let isFlipped = $state(false);
   let showMenu = $state(false);
   let isEditing = $state(false);
@@ -31,6 +31,7 @@
       });
       isEditing = false;
     }
+    showSuccessMessage("Flashcard edited successfully!");
   }
 
   function cancelEdit(e) {
