@@ -38,6 +38,11 @@
     dispatch('importDeck', event);
   }
 
+  function deleteFlashcard(event) {
+    const { index } = event.detail;
+    dispatch('deleteFlashcard', { index });
+  }
+
   function nextCard() {
     if (currentCardIndex < flashcards.length - 1) {
       currentCardIndex++;
@@ -261,7 +266,9 @@
     <Flashcard 
       question={flashcards[currentCardIndex].question} 
       answer={flashcards[currentCardIndex].answer}
+      index={currentCardIndex} 
       on:editCard={({ detail }) => handleEditCard(detail)}
+      on:delete={deleteFlashcard}
     />
     
     <div class="navigation-buttons">

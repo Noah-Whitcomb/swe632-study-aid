@@ -60,6 +60,14 @@
   function selectDeck(deck) {
     selectedDeck = deck;
   }
+
+  function handleDeleteFlashcard(event) {
+    const { index } = event.detail;
+    if (selectedDeck !== null) {
+      decks[selectedDeck].flashcards.splice(index, 1);
+      decks = [...decks];
+    }
+  }
 </script>
 
 <style>
@@ -151,6 +159,7 @@
       on:edit={handleEditDeck}
       on:delete={handleDeleteDeck}
       on:importDeck={openImportModal}
+      on:deleteFlashcard={handleDeleteFlashcard}
     />
   {/if}
 </div>
