@@ -1,6 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  let { question, answer } = $props();
+  let { question, answer, index } = $props();
   let isFlipped = $state(false);
   let showMenu = $state(false);
   let isEditing = $state(false);
@@ -45,6 +45,11 @@
       isFlipped = !isFlipped;
     }
   }
+
+  function deleteCard(event) {
+    event.stopPropagation();
+    dispatch('delete', { index });
+  }
 </script>
 
 <div 
@@ -68,6 +73,13 @@
           onclick={startEdit}
         >
           ✏️ Edit
+        </button>
+        <button 
+          type="button"
+          class="menu-item" 
+          onclick={deleteCard}
+        >
+        🗑️ Delete
         </button>
       </div>
     {/if}
