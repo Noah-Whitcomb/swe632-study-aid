@@ -7,7 +7,7 @@ let { decks, handleDeckChange } = $props();
 <div>
 	<div class="flex flex-col gap-2">
         {#each decks as deck, index}
-          <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-start" onclick={() => handleDeckChange(index)} >
+          <button class="flex justify-center bg-cyan-800 text-white rounded-2xl text-2xl p-4 cursor-pointer" onclick={() => handleDeckChange(index)} >
             {deck.name}
           </button>
         {/each}

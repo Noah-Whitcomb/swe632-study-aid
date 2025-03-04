@@ -40,34 +40,44 @@
 
 </script>
 
-<main class="overflow-auto w-full">
+<main class="flex w-full">
   <!-- {JSON.stringify(decks, null, 2)} -->
-  <div class="flex">
-    <div class="flex flex-col justify-start">
-      <div class="flex" >
-        <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-start mb-2" onclick={handleShowMenu}> Show active decks? </button>
-        <div class="flex justify-center w-[800px] mb-4 box-border">
-          {#if showDeckInput}
-            <input
-              type="text"
-              class="text-input"
-              bind:value={newDeckName}
-              placeholder="Enter deck name"
-            />
-            <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { addDeck(newDeckName); newDeckName = ""; showDeckInput = false;} }>Save Deck</button>
-          {:else}
-            <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => showDeckInput = true}>Add Deck</button>
-          {/if}
-        </div>
+
+  <!-- This div is column 1 - left side menus -->
+  <div class="flex-col w-1/4 bg-gray-500 p-4">
+    {#if decks.length > 0}
+      <div class="flex items-center justify-center bg-cyan-800 text-white rounded-2xl text-2xl p-4">
+        Active Decks
       </div>
-      {#if showMenu}
-      <Menu decks={decks} handleDeckChange={handleDeckChange}/> 
-      {/if}
+      <div class="p-2">
+        <Menu decks={decks} handleDeckChange={handleDeckChange}/> 
+      </div>
+    {:else}
+      <div class="p-4 text-center text-white text-2xl bg-cyan-800 rounded-2xl">
+        You have not made any decks. Click on "Add Deck" to get started!
+      </div>
+    {/if}
+  </div>
+        
+  <!-- This div is column 2 - displays actual flashcards -->
+  <div class="flex-col w-3/4 bg-gray-400 p-4">
+      <div class="flex justify-center bg-gray-700 p-6 gap-4">
+        {#if showDeckInput}
+        <input
+          type="text"
+          class="text-input bg-gray-100 rounded-md p-2"
+          bind:value={newDeckName}
+          placeholder="Enter deck name"
+        />
+        <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { addDeck(newDeckName); newDeckName = ""; showDeckInput = false;} }>Save Deck</button>
+        {:else}
+          <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => showDeckInput = true}>Add Deck</button>
+        {/if}
+      </div>
+      <div class="flex justify-center grow bg-gray-400 p-4">
+        <FlashcardList decks={decks} handleDeckChange={handleDeckChange} selectedDeck={selectedDeck} addDeck={addDeck} addFlashcard={addFlashcard}/>
+      </div>
       
     </div>
-    <div class="justify-center">
-      <FlashcardList decks={decks} handleDeckChange={handleDeckChange} selectedDeck={selectedDeck} addDeck={addDeck} addFlashcard={addFlashcard}/>
-    </div>
     
-  </div>
 </main>
