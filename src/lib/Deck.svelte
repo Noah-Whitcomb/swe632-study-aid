@@ -2,10 +2,11 @@
   import Flashcard from './Flashcard.svelte';
   import { createEventDispatcher } from 'svelte';
   
-  let { flashcards, deckName } = $props();
+  let { flashcards, deckName, showSuccessMessage } = $props();
   let showMenu = $state(false);
   let isEditing = $state(false);
   let editedName = $state(deckName);
+  let currentCardIndex = $state(0);
   
   const dispatch = createEventDispatcher();
 
@@ -36,7 +37,42 @@
   function handleImportDeck(event) {
     dispatch('importDeck', event);
   }
+
+  function deleteFlashcard(event) {
+    const { index } = event.detail;
+    dispatch('deleteFlashcard', { index });
+  }
+
+  function nextCard() {
+    if (currentCardIndex < flashcards.length - 1) {
+      currentCardIndex++;
+    }
+  }
+
+  function previousCard() {
+    if (currentCardIndex > 0) {
+      currentCardIndex--;
+    }
+  }
+
+  function handleKeydown(event) {
+    if (event.key === 'ArrowRight') {
+      nextCard();
+    } else if (event.key === 'ArrowLeft') {
+      previousCard();
+    }
+  }
+
+  function handleEditCard(editedCard) {
+    flashcards[currentCardIndex] = editedCard;
+    dispatch('editCard', { 
+      cardIndex: currentCardIndex, 
+      card: editedCard 
+    });
+  }
 </script>
+
+<svelte:window on:keydown={handleKeydown}/>
 
 <style>
   .deck {
@@ -70,10 +106,6 @@
     background-color: #f9f9f9; /* Match deck background */
   }
 
-  .flashcards-container {
-    position: relative;
-    z-index: 1;
-  }
 
   .deck-header {
     position: relative;
@@ -159,6 +191,39 @@
   .save-button:hover {
     background-color: #45a049;
   }
+
+  .navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .nav-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .nav-button:hover {
+    background-color: #0056b3;
+  }
+
+  .nav-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  .card-counter {
+    text-align: center;
+    margin-top: 1rem;
+    color: #666;
+  }
 </style>
 
 <div class="deck">
@@ -197,9 +262,36 @@
       </div>
     {/if}
   </div>
-  <div class="flashcards-container">
-    {#each flashcards as flashcard}
-      <Flashcard question={flashcard.question} answer={flashcard.answer} />
-    {/each}
-  </div>
+  {#if flashcards.length > 0}
+    <Flashcard 
+      question={flashcards[currentCardIndex].question} 
+      answer={flashcards[currentCardIndex].answer}
+      index={currentCardIndex} 
+      showSuccessMessage={showSuccessMessage}
+      on:editCard={({ detail }) => handleEditCard(detail)}
+      on:delete={deleteFlashcard}
+    />
+    
+    <div class="navigation-buttons">
+      <button 
+        class="nav-button" 
+        onclick={previousCard} 
+        disabled={currentCardIndex === 0}
+      >
+        Previous
+      </button>
+      <button 
+        class="nav-button" 
+        onclick={nextCard} 
+        disabled={currentCardIndex === flashcards.length - 1}
+      >
+        Next
+      </button>
+    </div>
+    <div class="card-counter">
+      Card {currentCardIndex + 1} of {flashcards.length}
+    </div>
+  {:else}
+    <p>No flashcards in this deck yet.</p>
+  {/if}
 </div>

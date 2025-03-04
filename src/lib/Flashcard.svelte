@@ -1,12 +1,127 @@
 <script>
-  export let question = "";
-  export let answer = "";
-  let flipped = false;
+  import { createEventDispatcher } from 'svelte';
+  let { question, answer, index, showSuccessMessage } = $props();
+  let isFlipped = $state(false);
+  let showMenu = $state(false);
+  let isEditing = $state(false);
+  let editedQuestion = $state(question);
+  let editedAnswer = $state(answer);
+  
+  const dispatch = createEventDispatcher();
 
-  function flipCard() {
-    flipped = !flipped;
+  function toggleMenu(e) {
+    e.stopPropagation();
+    showMenu = !showMenu;
+  }
+
+  function startEdit(e) {
+    e.stopPropagation();
+    editedQuestion = question;
+    editedAnswer = answer;
+    isEditing = true;
+    showMenu = false;
+  }
+
+  function saveEdit(e) {
+    e.preventDefault();
+    if (editedQuestion.trim() && editedAnswer.trim()) {
+      dispatch('editCard', {
+        question: editedQuestion.trim(),
+        answer: editedAnswer.trim()
+      });
+      isEditing = false;
+    }
+    showSuccessMessage("Flashcard edited successfully!");
+  }
+
+  function cancelEdit(e) {
+    e.stopPropagation();
+    isEditing = false;
+    editedQuestion = question;
+    editedAnswer = answer;
+  }
+
+  function handleCardClick() {
+    if (!isEditing) {
+      isFlipped = !isFlipped;
+    }
+  }
+
+  function deleteCard(event) {
+    event.stopPropagation();
+    dispatch('delete', { index });
   }
 </script>
+
+<div 
+  class="flashcard {isFlipped ? 'flipped' : ''}" 
+  onclick={handleCardClick}
+  onkeydown={handleCardClick}
+  role="button"
+  tabindex="0"
+>
+  <div class="card-menu">
+    <button 
+      type="button"
+      class="menu-dots" 
+      onclick={toggleMenu}
+    >⋮</button>
+    {#if showMenu}
+      <div class="card-menu-items">
+        <button 
+          type="button"
+          class="menu-item" 
+          onclick={startEdit}
+        >
+          ✏️ Edit
+        </button>
+        <button 
+          type="button"
+          class="menu-item" 
+          onclick={deleteCard}
+        >
+        🗑️ Delete
+        </button>
+      </div>
+    {/if}
+  </div>
+
+  {#if isEditing}
+    <div class="edit-form">
+      <form onsubmit={saveEdit}>
+        <textarea
+          class="edit-input"
+          bind:value={editedQuestion}
+          placeholder="Enter question"
+          rows="5"
+        ></textarea>
+        <textarea
+          class="edit-input"
+          bind:value={editedAnswer}
+          placeholder="Enter answer"
+          rows="5"
+        ></textarea>
+        <div class="button-group">
+          <button type="button" class="cancel-button" onclick={cancelEdit}>
+            Cancel
+          </button>
+          <button type="submit" class="save-button">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  {:else}
+    <div class="flashcard-content flashcard-front">
+      <p>{question}</p>
+      <div class="flip-indicator">Click to flip</div>
+    </div>
+    <div class="flashcard-content flashcard-back">
+      <p>{answer}</p>
+      <div class="flip-indicator">Click to flip</div>
+    </div>
+  {/if}
+</div>
 
 <style>
   .flashcard {
@@ -119,15 +234,111 @@
     color: #888;
     pointer-events: none; /* Prevent indicator from interfering with scroll */
   }
-</style>
 
-<button type="button" class="flashcard {flipped ? 'flipped' : ''}" on:click={flipCard} aria-label="Flashcard">
-  <div class="flashcard-content flashcard-front">
-    <p>{question}</p>
-    <div class="flip-indicator">Flip</div>
-  </div>
-  <div class="flashcard-content flashcard-back">
-    <p>{answer}</p>
-    <div class="flip-indicator">Flip</div>
-  </div>
-</button>
+  .card-menu {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 30; /* Increased z-index to ensure visibility */
+    transform: rotateY(0deg);
+    backface-visibility: hidden;
+  }
+
+  .menu-dots {
+    cursor: pointer;
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    font-size: 1.5rem;
+    color: #666;
+    transition: color 0.2s;
+    opacity: 0; /* Hide by default */
+  }
+
+  .flashcard:hover .menu-dots {
+    opacity: 1; /* Show on hover */
+  }
+
+  .card-menu-items {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 120px;
+    z-index: 31; /* Higher than menu-dots */
+  }
+
+  .menu-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+  }
+
+  .menu-item:hover {
+    background-color: #f0f0f0;
+  }
+
+  .edit-form {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    padding: 2rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 20;
+    transform: rotateY(0deg); /* Add this to prevent backwards text */
+  }
+
+  .edit-input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+  }
+
+  .save-button {
+    padding: 0.5rem 1rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .cancel-button {
+    padding: 0.5rem 1rem;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .save-button:hover {
+    background-color: #45a049;
+  }
+
+  .cancel-button:hover {
+    background-color: #da190b;
+  }
+</style>
