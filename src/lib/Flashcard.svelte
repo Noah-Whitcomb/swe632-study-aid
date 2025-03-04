@@ -1,29 +1,14 @@
 <script>
   export let question = "";
   export let answer = "";
-  export let index;
-  import { createEventDispatcher } from 'svelte';
-
   let flipped = false;
-  const dispatch = createEventDispatcher();
 
   function flipCard() {
     flipped = !flipped;
   }
-
-  function deleteCard(event) {
-    event.stopPropagation();
-    dispatch('delete', { index });
-  }
 </script>
 
 <style>
-  .flashcard-container {
-    position: relative;
-    left: 10%;
-    width: 80%;
-  }
-
   .flashcard {
     margin: 0.5rem auto;
     border: 1px solid #ccc;
@@ -134,38 +119,15 @@
     color: #888;
     pointer-events: none; /* Prevent indicator from interfering with scroll */
   }
-
-  .delete-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: red;
-    color: white;
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    z-index: 10;
-  }
-
-  .delete-button:hover {
-    background: darkred;
-  }
 </style>
 
-<div class="flashcard-container">
-  <button class="delete-button" on:click={deleteCard}>✖</button>
-  <button type="button" class="flashcard {flipped ? 'flipped' : ''}" on:click={flipCard} aria-label="Flashcard">
-    <div class="flashcard-content flashcard-front">
-      <h><strong>Question: </strong></h>
-      <p>{question}</p>
-      <div class="flip-indicator">Flip</div>
-    </div>
-    <div class="flashcard-content flashcard-back">
-      <h><strong>Answer: </strong></h>
-      <p>{answer}</p>
-      <div class="flip-indicator">Flip</div>
-    </div>
-  </button>
-</div>
+<button type="button" class="flashcard {flipped ? 'flipped' : ''}" on:click={flipCard} aria-label="Flashcard">
+  <div class="flashcard-content flashcard-front">
+    <p>{question}</p>
+    <div class="flip-indicator">Flip</div>
+  </div>
+  <div class="flashcard-content flashcard-back">
+    <p>{answer}</p>
+    <div class="flip-indicator">Flip</div>
+  </div>
+</button>

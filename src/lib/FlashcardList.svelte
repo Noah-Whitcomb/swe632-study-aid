@@ -11,7 +11,13 @@
 
   function handleEditDeck(event) {
     const { newName } = event.detail;
+    // decks = decks.map(deck => 
+    //   deck === selectedDeck 
+    //     ? { ...deck, name: newName }
+    //     : deck
+    // );
     decks[selectedDeck].name = newName;
+    //selectedDeck = { ...selectedDeck, name: newName };
   }
 
   function handleDeleteDeck() {
@@ -49,19 +55,11 @@
   function selectDeck(deck) {
     selectedDeck = deck;
   }
-
-  function handleDeleteFlashcard(event) {
-    const { index } = event.detail;
-    if (selectedDeck !== null) {
-      decks[selectedDeck].flashcards.splice(index, 1);
-      decks = [...decks];
-    }
-  }
 </script>
 
 <style>
   .flashcard-list {
-    max-width: 1800px;
+    max-width: 1800px;  /* Increased to match deck width */
     min-height: 1000px;
     margin: 0 auto;
     padding: 1rem;
@@ -71,7 +69,7 @@
   }
 
   .input-container {
-    width: 800px;
+    width: 800px;  /* Match deck width */
     display: flex;
     flex-direction: column;
     margin-bottom: 1rem;
@@ -88,13 +86,24 @@
     box-sizing: border-box;
   }
 
+  /* .add-button {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    align-self: flex-end;
+  } */
+
 
   .add-button:hover {
     background-color: #0056b3;
   }
 
   .deck-list {
-    width: 800px;
+    width: 800px;  /* Match deck width */
     margin-bottom: 1rem;
   }
 
@@ -137,7 +146,6 @@
       on:edit={handleEditDeck}
       on:delete={handleDeleteDeck}
       on:importDeck={openImportModal}
-      on:deleteFlashcard={handleDeleteFlashcard}
     />
   {/if}
 </div>
