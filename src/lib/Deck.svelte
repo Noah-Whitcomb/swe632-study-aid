@@ -269,7 +269,7 @@
       index={currentCardIndex} 
       showSuccessMessage={showSuccessMessage}
       on:editCard={({ detail }) => handleEditCard(detail)}
-      on:delete={deleteFlashcard}
+      on:deleteFlashcard={deleteFlashcard}
     />
     
     <div class="navigation-buttons">
