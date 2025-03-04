@@ -6,7 +6,7 @@
   let newAnswer = $state("");
   let newDeckName = $state("");
   let showDeckInput = $state(false);
-  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard } = $props();
+  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard, showSuccessMessage } = $props();
   let showImportModal = $state(false);
 
   function handleEditDeck(event) {
@@ -17,6 +17,7 @@
   function handleDeleteDeck() {
     decks.splice(selectedDeck, 1)
     selectedDeck = null;
+    showSuccessMessage("Deck deleted successfully!");
   }
 
   function openImportModal() {
@@ -56,6 +57,7 @@
       decks[selectedDeck].flashcards.splice(index, 1);
       decks = [...decks];
     }
+    showSuccessMessage("Flashcard deleted successfully!");
   }
 </script>
 

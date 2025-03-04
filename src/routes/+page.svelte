@@ -80,7 +80,7 @@
       
     </div>
     <div class="justify-center">
-      <FlashcardList decks={decks} handleDeckChange={handleDeckChange} selectedDeck={selectedDeck} addDeck={addDeck} addFlashcard={addFlashcard}/>
+      <FlashcardList decks={decks} handleDeckChange={handleDeckChange} selectedDeck={selectedDeck} addDeck={addDeck} addFlashcard={addFlashcard} showSuccessMessage={showSuccessMessage}/>
     </div>
 
     <Toast message={toastMessage} show={showToast} />
