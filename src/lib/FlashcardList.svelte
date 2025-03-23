@@ -70,35 +70,51 @@
   }
 
   function shuffleCards() {
+    let originalIndex = currentCardIndex;
     isShuffled = !isShuffled;
 
     if (isShuffled) {
-      shuffledIndices = [...Array(decks[selectedDeck].flashcards.length).keys()];
-      for (let i = shuffledIndices.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
-      }
+      shuffleIndices();
       currentCardIndex = 0;
     } else {
-      currentCardIndex = originalFlashcards.findIndex(card => card === decks[selectedDeck].flashcards[currentCardIndex]);
+      if (shuffledIndices.length > 0) {
+        currentCardIndex = decks[selectedDeck].flashcards.findIndex(card => decks[selectedDeck].flashcards[shuffledIndices[originalIndex]] === decks[selectedDeck].flashcards[originalIndex]);
+      }
     }
   }
 
+
+  function shuffleIndices() {
+    shuffledIndices = [...Array(decks[selectedDeck].flashcards.length).keys()];
+    for (let i = shuffledIndices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+    }
+  }
   function nextCard() {
     if (isShuffled) {
-      currentCardIndex = (currentCardIndex + 1) % shuffledIndices.length;
+      currentCardIndex++;
+      if (currentCardIndex >= shuffledIndices.length) {
+        shuffleIndices();
+        currentCardIndex = 0;
+      }
     } else {
-      currentCardIndex = (currentCardIndex + 1) % decks[selectedDeck].flashcards.length;
+        currentCardIndex = (currentCardIndex + 1) % decks[selectedDeck].flashcards.length;
     }
   }
 
   function previousCard() {
     if (isShuffled) {
-      currentCardIndex = (currentCardIndex - 1 + shuffledIndices.length) % shuffledIndices.length;
+      currentCardIndex--;
+      if (currentCardIndex < 0) {
+        shuffleIndices();
+        currentCardIndex = shuffledIndices.length - 1;
+      }
     } else {
       currentCardIndex = (currentCardIndex - 1 + decks[selectedDeck].flashcards.length) % decks[selectedDeck].flashcards.length;
     }
   }
+
 </script>
 
 <style>
@@ -161,7 +177,6 @@
 </style>
 
 <ImportModal show={showImportModal} on:import={importDeck} on:close={closeImportModal} />
-
 <div class="flashcard-list">
   {#if typeof selectedDeck === "number" && selectedDeck >= 0}
     <div class="input-container">
@@ -188,10 +203,12 @@
       on:importDeck={openImportModal}
       on:deleteFlashcard={handleDeleteFlashcard}
     />
-    <div class="shuffle-container">
-      <button class="shuffle-button" class:shuffled={isShuffled} onclick={shuffleCards}>Shuffle</button>
-      <div class="card-counter">
+    {#if decks[selectedDeck].flashcards.length > 0}
+      <div class="shuffle-container">
+        <button class="shuffle-button" class:shuffled={isShuffled} onclick={shuffleCards}>Shuffle</button>
+        <div class="card-counter">
+        </div>
       </div>
-    </div>
+    {/if}
   {/if}
 </div>
