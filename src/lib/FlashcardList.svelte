@@ -167,10 +167,11 @@ async function goToFirstCard() {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: -6.5rem; /* Add some space between flashcard and button */
+    margin-top: -6.5rem; 
     z-index: 10;
   }
   .shuffle-button {
+    margin-right: 3px;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     border: none;
@@ -193,7 +194,7 @@ async function goToFirstCard() {
 
   .first-card-button {
     position: relative;
-    left:-135px;
+    left:-300px;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     border: none;
