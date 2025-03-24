@@ -91,29 +91,45 @@
       [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
     }
   }
-  function nextCard() {
-    if (isShuffled) {
-      currentCardIndex++;
-      if (currentCardIndex >= shuffledIndices.length) {
-        shuffleIndices();
-        currentCardIndex = 0;
-      }
-    } else {
-        currentCardIndex = (currentCardIndex + 1) % decks[selectedDeck].flashcards.length;
-    }
-  }
+  let firstCardClicked = $state(false);
 
-  function previousCard() {
-    if (isShuffled) {
-      currentCardIndex--;
-      if (currentCardIndex < 0) {
-        shuffleIndices();
-        currentCardIndex = shuffledIndices.length - 1;
-      }
-    } else {
-      currentCardIndex = (currentCardIndex - 1 + decks[selectedDeck].flashcards.length) % decks[selectedDeck].flashcards.length;
+function nextCard() {
+  if (isShuffled) {
+    currentCardIndex++;
+    if (currentCardIndex >= shuffledIndices.length) {
+      shuffleIndices();
+      currentCardIndex = 0;
     }
+  } else {
+    currentCardIndex = (currentCardIndex + 1) % decks[selectedDeck].flashcards.length;
   }
+}
+
+function previousCard() {
+  if (isShuffled) {
+    currentCardIndex--;
+    if (currentCardIndex < 0) {
+      shuffleIndices();
+      currentCardIndex = shuffledIndices.length - 1;
+    }
+  } else {
+    currentCardIndex = (currentCardIndex - 1 + decks[selectedDeck].flashcards.length) % decks[selectedDeck].flashcards.length;
+  }
+}
+
+import { tick } from 'svelte';
+
+async function goToFirstCard() {
+  if (!decks[selectedDeck] || decks[selectedDeck].flashcards.length === 0) return; 
+  
+  currentCardIndex = -1; // Force change detection
+  await tick();
+  currentCardIndex = 0;  // Now actually set it to first card
+  await tick();
+}
+
+
+
 
 </script>
 
@@ -174,6 +190,22 @@
     margin-top: 1rem;
     color: #666;
   }
+
+  .first-card-button {
+    position: relative;
+    left:-135px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #28a745; /* Green color */
+    color: #fff;
+    cursor: pointer;
+    margin-top: -3.5rem;
+  }
+  .first-card-button.clicked{
+        background-color: darkgreen;
+    }
 </style>
 
 <ImportModal show={showImportModal} on:import={importDeck} on:close={closeImportModal} />
@@ -195,20 +227,22 @@
       <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { addFlashcard(newQuestion, newAnswer); newQuestion = ""; newAnswer = ""; } }>Add</button>
     </div>
     <Deck
-      flashcards={isShuffled ? shuffledIndices.map(index => decks[selectedDeck].flashcards[index]) : decks[selectedDeck].flashcards}
+    flashcards={isShuffled ? shuffledIndices.map(index => decks[selectedDeck].flashcards[index]) : decks[selectedDeck].flashcards}
       deckName={decks[selectedDeck].name}
       showSuccessMessage={showSuccessMessage}
       on:edit={handleEditDeck}
       on:delete={handleDeleteDeck}
       on:importDeck={openImportModal}
       on:deleteFlashcard={handleDeleteFlashcard}
+      currentCardIndex={currentCardIndex} 
     />
     {#if decks[selectedDeck].flashcards.length > 0}
-      <div class="shuffle-container">
-        <button class="shuffle-button" class:shuffled={isShuffled} onclick={shuffleCards}>Shuffle</button>
-        <div class="card-counter">
-        </div>
+    <div class="shuffle-container">
+      <button class="shuffle-button" class:shuffled={isShuffled} onclick={shuffleCards}>Shuffle</button>
+      <button class="first-card-button" class:clicked={firstCardClicked} onclick={goToFirstCard}>Back To First</button>
+      <div class="card-counter">
       </div>
-    {/if}
+    </div>
   {/if}
+{/if}
 </div>

@@ -2,11 +2,10 @@
   import Flashcard from './Flashcard.svelte';
   import { createEventDispatcher } from 'svelte';
   
-  let { flashcards, deckName, showSuccessMessage } = $props();
+  let { flashcards, deckName, showSuccessMessage, currentCardIndex } = $props();
   let showMenu = $state(false);
   let isEditing = $state(false);
   let editedName = $state(deckName);
-  let currentCardIndex = $state(0);
   
   const dispatch = createEventDispatcher();
 
