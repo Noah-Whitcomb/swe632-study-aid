@@ -6,25 +6,8 @@
   let newAnswer = $state("");
   let newDeckName = $state("");
   let showDeckInput = $state(false);
-  let { decks=$bindable(), handleDeckChange, selectedDeck, addDeck, addFlashcard, showSuccessMessage } = $props();
+  let { decks, handleDeckChange, selectedDeck, addDeck, removeDeck, addFlashcard, removeFlashcard, showSuccessMessage, importDeck, handleEditDeck } = $props();
   let showImportModal = $state(false);
-
-  function handleEditDeck(event) {
-    const { newName } = event.detail;
-    // decks = decks.map(deck => 
-    //   deck === selectedDeck 
-    //     ? { ...deck, name: newName }
-    //     : deck
-    // );
-    decks[selectedDeck].name = newName;
-    //selectedDeck = { ...selectedDeck, name: newName };
-  }
-
-  function handleDeleteDeck() {
-    decks.splice(selectedDeck, 1)
-    selectedDeck = null;
-    showSuccessMessage("Deck deleted successfully!");
-  }
 
   function openImportModal() {
     showImportModal = true;
@@ -32,40 +15,6 @@
 
   function closeImportModal() {
     showImportModal = false;
-  }
-
-  function importDeck(event) {
-    const file = event.detail.file;
-    if (!file) {
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const text = e.target.result;
-        const importedFlashcards = text.split("\n").map(line => {
-            const [q, a] = line.split("|").map(part => part.trim());
-            return q && a ? { question: q, answer: a } : null;
-        }).filter(Boolean);
-
-        decks[selectedDeck].flashcards = [...decks[selectedDeck].flashcards, ...importedFlashcards];
-
-    };
-    reader.readAsText(file);
-  }
-
-  function selectDeck(deck) {
-    selectedDeck = deck;
-  }
-
-  function handleDeleteFlashcard(event) {
-    const { index } = event.detail;
-    if (confirm('Are you sure you want to delete this flashcard?')) {
-      if (selectedDeck !== null) {
-        decks[selectedDeck].flashcards.splice(index, 1);
-        decks = [...decks];
-      }
-    }
-    showSuccessMessage("Flashcard deleted successfully!");
   }
 </script>
 
@@ -157,9 +106,9 @@
       deckName={decks[selectedDeck].name}
       showSuccessMessage={showSuccessMessage}
       on:edit={handleEditDeck}
-      on:delete={handleDeleteDeck}
+      on:delete={() => removeDeck(selectedDeck)}
       on:importDeck={openImportModal}
-      on:deleteFlashcard={handleDeleteFlashcard}
+      on:deleteFlashcard={removeFlashcard}
     />
   {/if}
 </div>
