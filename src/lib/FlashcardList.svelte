@@ -14,7 +14,8 @@
   let currentCardIndex = $state(0);
   let originalFlashcards = $state([]);
 
- 
+
+
 
   function handleDeleteDeck() {
     decks.splice(selectedDeck, 1);
@@ -30,12 +31,35 @@
     showImportModal = false;
   }
 
-  
-
   function selectDeck(deck) {
-    selectedDeck = deck;
-    currentCardIndex = 0;
-    originalFlashcards = [...deck.flashcards];
+  if (!decks[deck]) return; // Validate the deck
+
+  // Reset shuffle state
+  isShuffled = false;
+  shuffledIndices = [];
+  
+  // Reset flashcard container state
+  selectedDeck = deck;
+
+  if (decks[deck].flashcards.length === 0) {
+    // Handle empty deck
+    currentCardIndex = null; // Reset the current index
+    console.log("Selected deck is empty");
+    return; // Exit function early
+  }
+
+  // Update flashcards for non-empty decks
+  originalFlashcards = [...decks[deck].flashcards];
+  currentCardIndex = 0; // Reset to first card
+}
+
+
+  function showWarningMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'warning-toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
   }
 
   function handleDeleteFlashcard(event) {
@@ -50,18 +74,43 @@
   }
 
   function shuffleCards() {
-    let originalIndex = currentCardIndex;
-    isShuffled = !isShuffled;
+  // If no deck is selected, show warning
+  if (selectedDeck === null) {
+    showWarningMessage("Please select a deck first");
+    return;
+  }
 
-    if (isShuffled) {
-      shuffleIndices();
-      currentCardIndex = 0;
-    } else {
-      if (shuffledIndices.length > 0) {
-        currentCardIndex = decks[selectedDeck].flashcards.findIndex(card => decks[selectedDeck].flashcards[shuffledIndices[originalIndex]] === decks[selectedDeck].flashcards[originalIndex]);
-      }
+  const currentDeck = decks[selectedDeck];
+
+  // Toggle shuffle mode
+  isShuffled = !isShuffled;
+
+  if (isShuffled) {
+    // Preserve the current card when entering shuffle mode
+    const currentCard = currentDeck.flashcards[currentCardIndex];
+    
+    // Generate shuffled indices
+    shuffleIndices();
+    
+    // Find the index of the current card in the shuffled array
+    const shuffledCurrentIndex = shuffledIndices.findIndex(
+      index => currentDeck.flashcards[index] === currentCard
+    );
+    
+    // If found, set the current index to this shuffled position
+    // Otherwise, reset to the first shuffled index
+    currentCardIndex = shuffledCurrentIndex !== -1 
+      ? shuffledCurrentIndex 
+      : 0;
+  } else {
+    // When exiting shuffle mode, find the original index of the current card
+    if (shuffledIndices.length > 0) {
+      currentCardIndex = currentDeck.flashcards.findIndex(
+        card => card === currentDeck.flashcards[shuffledIndices[currentCardIndex]]
+      );
     }
   }
+}
 
   function shuffleIndices() {
     shuffledIndices = [...Array(decks[selectedDeck].flashcards.length).keys()];
@@ -156,6 +205,7 @@
     color: #fff;
     cursor: pointer;
     margin-bottom: 1rem;
+    transition: background-color 0.3s ease; /* Add smooth transition */
   }
 
   .shuffle-button.shuffled {
@@ -184,43 +234,53 @@
   .first-card-button.clicked {
     background-color: darkgreen;
   }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, 1rem); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
 </style>
 
 <ImportModal show={showImportModal} on:import={importDeck} on:close={closeImportModal} />
 <div class="flashcard-list">
-  {#if typeof selectedDeck === "number" && selectedDeck >= 0}
-    <div class="input-container">
-      <input
-        type="text"
-        class="text-input"
-        bind:value={newQuestion}
-        placeholder="Enter question"
-      />
-      <input
-        type="text"
-        class="text-input"
-        bind:value={newAnswer}
-        placeholder="Enter answer"
-      />
-      <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { addFlashcard(newQuestion, newAnswer); newQuestion = ""; newAnswer = ""; } }>Add</button>
-    </div>
-    <Deck
-      flashcards={isShuffled ? shuffledIndices.map(index => decks[selectedDeck].flashcards[index]) : decks[selectedDeck].flashcards}
-      deckName={decks[selectedDeck].name}
-      showSuccessMessage={showSuccessMessage}
-      on:edit={handleEditDeck}
-      on:delete={() => removeDeck(selectedDeck)}
-      on:importDeck={openImportModal}
-      on:deleteFlashcard={handleDeleteFlashcard}
-      currentCardIndex={currentCardIndex} 
+  {#if typeof selectedDeck === "number" && selectedDeck >= 0 && decks[selectedDeck]}
+  <div class="input-container">
+    <input
+      type="text"
+      class="text-input"
+      bind:value={newQuestion}
+      placeholder="Enter question"
     />
-    {#if decks[selectedDeck].flashcards.length > 0}
-      <div class="shuffle-container">
-        <button class="shuffle-button" class:shuffled={isShuffled} onclick={shuffleCards}>Shuffle</button>
-        <button class="first-card-button" class:clicked={firstCardClicked} onclick={goToFirstCard}>Back To First</button>
-        <div class="card-counter">
-        </div>
+    <input
+      type="text"
+      class="text-input"
+      bind:value={newAnswer}
+      placeholder="Enter answer"
+    />
+    <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { addFlashcard(newQuestion, newAnswer); newQuestion = ""; newAnswer = ""; } }>Add</button>
+  </div>
+  <Deck
+    flashcards={isShuffled ? shuffledIndices.map(index => decks[selectedDeck].flashcards[index]) : decks[selectedDeck].flashcards}
+    deckName={decks[selectedDeck].name}
+    showSuccessMessage={showSuccessMessage}
+    on:edit={handleEditDeck}
+    on:delete={() => removeDeck(selectedDeck)}
+    on:importDeck={openImportModal}
+    on:deleteFlashcard={handleDeleteFlashcard}
+    currentCardIndex={currentCardIndex} 
+  />
+  {#if decks[selectedDeck].flashcards.length > 0}
+    <div class="shuffle-container">
+      <button 
+      class="shuffle-button {isShuffled ? 'shuffled' : ''}" 
+      onclick={shuffleCards}
+    >
+      Shuffle
+    </button>
+          <button class="first-card-button" class:clicked={firstCardClicked} onclick={goToFirstCard}>Back To First</button>
+      <div class="card-counter">
       </div>
-    {/if}
+    </div>
   {/if}
+{/if}
 </div>

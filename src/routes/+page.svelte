@@ -20,7 +20,15 @@
       showToast = false;
     }, 3000);
   }
+  function selectDeck(deck) {
+    // Check for a valid deck
+    if (!decks[deck]) return;
+    isShuffled = false;
+    shuffledIndices = 
+  
 
+    // Set the new selected deck
+    selectedDeck = deck;  }
   function handleDeckChange(deck) {
     console.log("handling deck change in page.svelet");
     selectedDeck = deck;
