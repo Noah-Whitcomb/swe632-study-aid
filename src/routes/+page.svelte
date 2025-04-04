@@ -115,23 +115,45 @@
   <!-- {JSON.stringify(decks, null, 2)} -->
 
   <!-- This div is column 1 - left side menus -->
-  <div class="flex-col w-1/4 bg-gray-500 p-4">
-    {#if decks.length > 0}
-      <!-- <div class="flex items-center justify-center bg-cyan-800 text-white rounded-2xl text-2xl p-4">
-        Active Decks
-      </div> -->
-      <div class="flex items-center justify-center bg-cyan-900 text-white rounded-2xl text-3xl p-8 shadow-lg">
-        Active Decks:
-      </div>
+  <div class="flex flex-col w-1/4 bg-gray-500 p-4 gap-2">
+    <!-- this div shows our clickable decks -->
+    <div class="h-4/8 bg-gray-700 rounded-2xl overflow-auto p-4">
+      {#if decks.length > 0}
+        <div class="flex items-center justify-center bg-cyan-900 border-2 border-black text-white rounded-md text-3xl p-4 shadow-lg">
+          Active Decks:
+        </div>
 
-      <div class="p-2">
-        <Menu {decks} {handleDeckChange} {selectedDeck}/> 
-      </div>
-    {:else}
-      <div class="p-4 text-center text-white text-2xl bg-cyan-800 rounded-2xl">
-        You have not made any decks. Click on "Add Deck" to get started!
-      </div>
-    {/if}
+        <div class="p-2">
+          <Menu {decks} {handleDeckChange} {selectedDeck}/> 
+        </div>
+      {:else}
+        <div class="p-4 text-center text-white bg-cyan-900 border-2 border-black rounded-md text-3xl shadow-lg w-auto h-auto">
+          You have not made any decks. Click on "Add Deck" to get started!
+        </div>
+      {/if}
+    </div>
+    
+    <!-- this div shows flashcard previews for the selected deck -->
+    <div class=" flex flex-col gap-1 h-4/8 bg-gray-700 rounded-2xl p-4 overflow-auto">
+      {#if decks.length == 0}
+        <div class="p-4 text-center text-white bg-cyan-900 border-2 border-black rounded-md text-3xl shadow-lg w-auto h-auto">
+          Make a deck and see previews of your flashcards here!
+        </div>
+      {:else if decks.length > 0 && decks[selectedDeck].flashcards.length == 0}
+        <div class="flex items-center justify-center bg-cyan-900 border-2 border-black text-white rounded-md text-3xl p-4 shadow-lg">
+          There are no flashcards in this deck!
+        </div>
+      {:else}
+        <div class="p-4 text-center text-white bg-cyan-900 border-2 border-black rounded-md text-3xl shadow-lg w-auto h-auto">
+          Flashcard previews:
+        </div>
+        {#each decks[selectedDeck].flashcards as flashcard}
+          <div class="p-4 text-center text-white scale-90 bg-cyan-600 border-2 border-black rounded-md text-3xl shadow-lg min-h-20 truncate w-auto">
+            Q: {flashcard.question}
+          </div>
+        {/each}
+      {/if}
+    </div>
   </div>
         
   <!-- This div is column 2 - displays actual flashcards -->
