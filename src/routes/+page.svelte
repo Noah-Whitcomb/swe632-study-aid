@@ -155,8 +155,12 @@
         <div class="p-4 text-center text-white bg-cyan-900 border-2 border-black rounded-md text-3xl shadow-lg w-auto h-auto">
           Flashcard previews:
         </div>
-        {#each decks[selectedDeck].flashcards as flashcard}
-          <div class="p-4 text-center text-white scale-90 bg-cyan-600 border-2 border-black rounded-md text-3xl shadow-lg min-h-20 truncate w-auto">
+        {#each decks[selectedDeck].flashcards as flashcard, i}
+          <div class="p-4 text-center text-white scale-90 bg-cyan-600 border-2 border-black rounded-md text-3xl shadow-lg min-h-20 truncate w-auto cursor-pointer"
+            onclick={() => {
+              decks[selectedDeck].currentCardIndex = i;
+            }}
+          >
             Q: {flashcard.question}
           </div>
         {/each}
@@ -180,7 +184,7 @@
         {/if}
       </div>
       <div class="flex justify-center grow bg-gray-400 p-4">
-        <FlashcardList {decks} {handleDeckChange} {selectedDeck} {addDeck} {addFlashcard} {showSuccessMessage} {importDeck} {removeDeck} {removeFlashcard} {handleEditDeck}/>
+        <FlashcardList {decks} {handleDeckChange} {selectedDeck} {addDeck} {addFlashcard} {showSuccessMessage} {importDeck} {removeDeck} {removeFlashcard} {handleEditDeck} currentCardIndex={decks[selectedDeck]?.currentCardIndex}/>
       </div>
       <Toast message={toastMessage} show={showToast} />
   </div>
