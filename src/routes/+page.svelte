@@ -225,10 +225,10 @@
         {:else}
           <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => showDeckInput = true}>Add Deck</button>
         {/if} -->
-      </div>
       <div class="flex justify-center grow bg-gray-400 p-4">
         <FlashcardList {decks} {handleDeckChange} {selectedDeck} {addDeck} {addFlashcard} {showSuccessMessage} {importDeck} {removeDeck} {removeFlashcard} {handleEditDeck} currentCardIndex={decks[selectedDeck]?.currentCardIndex}/>
       </div>
       <Toast message={toastMessage} show={showToast} />
+    </div>
   </div>
 </main>
