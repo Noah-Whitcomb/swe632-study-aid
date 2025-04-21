@@ -251,7 +251,6 @@
       placeholder="Enter answer"
       onkeydown={handleAnswerKeydown}
     />
-    <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { submitFlashcard(); }}>Add</button>
   </div>
   <Deck
     flashcards={isShuffled ? shuffledIndices.map(index => decks[selectedDeck].flashcards[index]) : decks[selectedDeck].flashcards}
@@ -276,6 +275,14 @@
       </div>
     </div>
   {/if}
+  <div class="submit-button-container">
+    <button
+      class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer mt-4"
+      onclick={submitFlashcard}
+    >
+      <span class="text-3xl">+</span>
+    </button>
+  </div>
  {/if}
  </div>
  
@@ -299,7 +306,15 @@
     margin-bottom: 1rem;
     box-sizing: border-box;
   }
- 
+  .submit-button-container {
+  position: absolute;
+  top: 190px;
+  right: 250px;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
  
   .text-input {
     padding: 0.5rem;
@@ -307,7 +322,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-bottom: 0.5rem;
-    width: 100%;
+    width: 85%;
     box-sizing: border-box;
     background-color: white;
   }
