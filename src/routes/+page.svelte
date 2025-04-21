@@ -213,19 +213,6 @@
         
   <!-- This div is column 2 - displays actual flashcards -->
   <div class="flex-col w-3/4 bg-gray-400 p-4">
-      <div class="flex justify-center bg-gray-700 p-6 gap-4">
-        <!-- {#if showDeckInput}
-        <input
-          type="text"
-          class="text-input bg-gray-100 rounded-md p-2"
-          bind:value={newDeckName}
-          placeholder="Enter deck name"
-        />
-        <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => { addDeck(newDeckName); newDeckName = ""; showDeckInput = false;} }>Save Deck</button>
-        {:else}
-          <button class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer self-end" onclick={() => showDeckInput = true}>Add Deck</button>
-        {/if} -->
-      </div>
       <div class="flex justify-center grow bg-gray-400 p-4">
         <FlashcardList {decks} {handleDeckChange} {selectedDeck} {addDeck} {addFlashcard} {showSuccessMessage} {importDeck} {removeDeck} {removeFlashcard} {handleEditDeck} currentCardIndex={decks[selectedDeck]?.currentCardIndex}/>
       </div>
