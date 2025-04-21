@@ -274,7 +274,7 @@
   {/if}
   <div class="submit-button-container">
     <button
-      class="px-4 py-2 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer mt-4"
+      class="px-6 py-1 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer mt-4"
       onclick={submitFlashcard}
     >
       <span class="text-3xl">+</span>
@@ -305,7 +305,7 @@
   }
   .submit-button-container {
   position: absolute;
-  top: 195px;
+  top: 197.5px;
   right: 270px;
   display: flex;
   justify-content: center;
