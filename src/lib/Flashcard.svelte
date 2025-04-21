@@ -79,43 +79,43 @@
   role="button"
   tabindex="0"
 >
-  {#if isEditing}
-    <div class="edit-form">
-      <form onsubmit={saveEdit}>
-        <textarea
-          class="edit-input"
-          bind:value={editedQuestion}
-          placeholder="Enter question"
-          rows="5"
-        ></textarea>
-        <textarea
-          class="edit-input"
-          bind:value={editedAnswer}
-          placeholder="Enter answer"
-          rows="5"
-        ></textarea>
-        <div class="button-group">
-          <button type="button" class="cancel-button" onclick={cancelEdit}>
-            Cancel
-          </button>
-          <button type="submit" class="save-button">
-            Save Changes
-          </button>
-        </div>
-      </form>
+{#if isEditing}
+<div class="edit-form">
+  <form onsubmit={saveEdit}>
+    <textarea
+      class="edit-input"
+      bind:value={editedQuestion}
+      placeholder="Enter question"
+      rows="5"
+    ></textarea>
+    <textarea
+      class="edit-input"
+      bind:value={editedAnswer}
+      placeholder="Enter answer"
+      rows="5"
+    ></textarea>
+    <div class="button-group">
+      <button type="button" class="cancel-button" onclick={cancelEdit}>
+        Cancel
+      </button>
+      <button type="submit" class="save-button">
+        Save Changes
+      </button>
     </div>
-  {:else}
-    <div class="flashcard-content flashcard-front">
-      <strong>Question:</strong>
-      <p>{question}</p>
-      <div class="flip-indicator">Click to flip</div>
-    </div>
-    <div class="flashcard-content flashcard-back">
-      <strong>Answer:</strong>
-      <p>{answer}</p>
-      <div class="flip-indicator">Click to flip</div>
-    </div>
-  {/if}
+  </form>
+</div>
+{:else}
+<div class="flashcard-content flashcard-front">
+  <strong>Question:</strong>
+  <p>{question}</p>
+  <div class="flip-indicator">Click to flip</div>
+</div>
+<div class="flashcard-content flashcard-back">
+  <strong>Answer:</strong>
+  <p>{answer}</p>
+  <div class="flip-indicator">Click to flip</div>
+</div>
+{/if}
 </div>
 
 <div class="card-menu">
@@ -162,7 +162,6 @@
     height: 100%;
     backface-visibility: hidden;
     display: flex;
-    flex-direction: column;
     padding: 2rem;
     box-sizing: border-box;
     transform-style: preserve-3d;
@@ -171,12 +170,14 @@
   .flashcard-front p,
   .flashcard-back p {
     margin: 0;
-    padding: 1rem;
+    padding: 7.5rem;
     width: 100%;
     flex: 1;
     text-align: center;
     box-sizing: border-box;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
+    font-weight: 550;
+    color: #2c3e50;
     margin-bottom: 2rem;
     pointer-events: none;
   }
