@@ -232,6 +232,9 @@
  <div class="flashcard-list">
   {#if typeof selectedDeck === "number" && selectedDeck >= 0 && decks[selectedDeck]}
   <div class="input-container">
+    <p style="font-weight: bold; font-size: 1.5rem; color: black;">
+      Add a Flashcard to Your Selected Deck:
+    </p>
     <input
       type="text"
       class="text-input"
@@ -321,6 +324,7 @@
     margin-bottom: 0.5rem;
     width: 85%;
     box-sizing: border-box;
+    background-color: white;
   }
  
  
