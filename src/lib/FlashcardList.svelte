@@ -231,6 +231,15 @@
  <ImportModal show={showImportModal} on:import={importDeck} on:close={closeImportModal} />
  <div class="flashcard-list">
   {#if typeof selectedDeck === "number" && selectedDeck >= 0 && decks[selectedDeck]}
+  <div class="submit-button-container">
+    <button
+      onclick={submitFlashcard}
+      class="submit-button"
+      title="Add flashcard"
+    >
+      +
+    </button>
+  </div>
   <div class="input-container">
     <input
       type="text"
@@ -272,14 +281,7 @@
       </div>
     </div>
   {/if}
-  <div class="submit-button-container">
-    <button
-      class="px-6 py-1 text-base border-none rounded-md bg-blue-500 text-white cursor-pointer mt-4"
-      onclick={submitFlashcard}
-    >
-      <span class="text-3xl">+</span>
-    </button>
-  </div>
+
  {/if}
  </div>
  
@@ -306,13 +308,28 @@
   
   .submit-button-container {
   position: relative;
-  top: -26.5%;
-  right: -45%;
+  top: 7%;
+  right: -42%;
   display: flex;
   justify-content: center;
   margin-top: 1rem;
+  z-index: 1000;
 }
-
+.submit-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius:15%;
+  width: 60px;
+  height: 50px;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
 
  
   .text-input {
