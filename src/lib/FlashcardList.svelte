@@ -305,9 +305,9 @@
   }
   
   .submit-button-container {
-  position: absolute;
-  top: 20%;
-  right: 15%;
+  position: relative;
+  top: -26.5%;
+  right: -45%;
   display: flex;
   justify-content: center;
   margin-top: 1rem;
