@@ -9,11 +9,10 @@
   let newAnswer = $state("");
   let newDeckName = $state("");
   let showDeckInput = $state(false);
-  let { decks, handleDeckChange, selectedDeck, addDeck, removeDeck, addFlashcard, removeFlashcard, showSuccessMessage, importDeck, handleEditDeck } = $props();
+  let { decks, handleDeckChange, selectedDeck, addDeck, removeDeck, addFlashcard, removeFlashcard, showSuccessMessage, importDeck, handleEditDeck, currentCardIndex: passedCardIndex } = $props();
   let showImportModal = $state(false);
   let isShuffled = $state(false);
   let shuffledIndices = $state([]);
-  let currentCardIndex = $state(0);
   let originalFlashcards = $state([]);
  
  
@@ -241,6 +240,9 @@
     </button>
   </div>
   <div class="input-container">
+    <p style="font-weight: bold; font-size: 1.5rem; color: black;">
+      Add a Flashcard to Your Selected Deck:
+    </p>
     <input
       type="text"
       class="text-input"
@@ -266,7 +268,7 @@
     on:delete={() => removeDeck(selectedDeck)}
     on:importDeck={openImportModal}
     on:deleteFlashcard={handleDeleteFlashcard}
-    currentCardIndex={currentCardIndex}
+    currentCardIndex={passedCardIndex} 
   />
   {#if decks[selectedDeck].flashcards.length > 0}
     <div class="shuffle-container">
@@ -340,6 +342,7 @@
     margin-bottom: 0.5rem;
     width: 85%;
     box-sizing: border-box;
+    background-color: white;
   }
  
  
