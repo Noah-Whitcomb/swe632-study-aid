@@ -303,14 +303,16 @@
     margin-bottom: 1rem;
     box-sizing: border-box;
   }
+  
   .submit-button-container {
   position: absolute;
-  top: 197.5px;
-  right: 270px;
+  top: 20%;
+  right: 15%;
   display: flex;
   justify-content: center;
   margin-top: 1rem;
 }
+
 
  
   .text-input {
